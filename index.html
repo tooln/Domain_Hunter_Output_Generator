@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Formatter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            resize: none;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            font-weight: bold;
+            background-color: white;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            display: block;
+            margin: 5px 0;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Link Formatter</h1>
+    <textarea id="linkInput" placeholder="Enter your links here, one per line..."></textarea>
+    <button onclick="formatLinks()">Format Links</button>
+    
+    <div id="output"></div>
+
+    <script>
+        function formatLinks() {
+            const input = document.getElementById('linkInput').value;
+            const links = input.split('\n');
+            const formattedLinks = links.map(link => {
+                link = link.replace(/http___/g, 'http://').replace(/https__/g, 'https://');
+                let formattedLink = link.replace(/_links\.txt$/, '').replace(/_/g, '/');
+                if (!formattedLink.startsWith('http://') && !formattedLink.startsWith('https://')) {
+                    formattedLink = 'http://' + formattedLink;
+                }
+                formattedLink = formattedLink.replace(/\/+$/, '');
+                return formattedLink;
+            });
+
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = formattedLinks.map(link => 
+                `<a href="${link}" target="_blank">${link}</a>`
+            ).join('');
+        }
+    </script>
+</body>
+</html>
