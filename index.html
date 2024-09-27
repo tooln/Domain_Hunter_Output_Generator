@@ -72,7 +72,7 @@
             const input = document.getElementById('linkInput').value;
             const links = input.split('\n');
             const formattedLinks = links.map(link => {
-                link = link.replace(/http___/g, 'http://').replace(/https__/g, 'https://');
+                link = link.replace(/http___/g, 'http:/').replace(/https__/g, 'https:/');
                 let formattedLink = link.replace(/_links\.txt$/, '').replace(/_/g, '/');
                 if (!formattedLink.startsWith('http://') && !formattedLink.startsWith('https://')) {
                     formattedLink = 'http://' + formattedLink;
