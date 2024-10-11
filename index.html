@@ -98,7 +98,7 @@
                 let formattedLink = link.replace(/_links\.txt$/, '').replace(/_/g, '/');
                 
                 if (!formattedLink.startsWith('http://') && !formattedLink.startsWith('https://')) {
-                    formattedLink = 'http://' + formattedLink;
+                    formattedLink = 'https://' + formattedLink;
                 }
                 
                 formattedLink = formattedLink.replace(/\/+$/, '');
