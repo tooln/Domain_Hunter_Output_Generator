@@ -1,2 +1,1 @@
-# Domain_Hunter_link_Opener
-test
+# Domain Hunter Output Generator
