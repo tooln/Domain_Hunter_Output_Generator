@@ -47,36 +47,20 @@
             border-radius: 5px;
             padding: 15px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .link-container {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            white-space: pre-wrap; /* To preserve formatting */
         }
         a {
-            display: block;
-            margin: 5px 0;
             color: #007bff;
             text-decoration: none;
-            transition: color 0.3s;
         }
         a:hover {
-            color: #0056b3;
-        }
-        .command {
-            background-color: #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .command:hover {
-            background-color: #d3d3d3;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>Domain Hunter Link Formatter</h1>
-    <textarea id="linkInput" placeholder="Enter your links here, one per line..."></textarea>
+    <h1>Domain Hunter Ouptut Generator</h1>
+    <textarea id="linkInput" placeholder="Enter your links here..."></textarea>
     <button onclick="formatLinks()">Generate</button>
     
     <div id="output"></div>
@@ -85,47 +69,43 @@
         function formatLinks() {
             const input = document.getElementById('linkInput').value.trim();
             if (!input) {
-                alert("Please enter at least one link.");
+                alert("Please enter the text.");
                 return;
             }
             
-            const links = input.split('\n').filter(link => link.trim() !== '');
             const outputDiv = document.getElementById('output');
             outputDiv.innerHTML = ''; // Clear previous output
 
-            links.forEach(link => {
-                link = link.replace(/http___/g, 'http:/').replace(/https__/g, 'https:/');
-                let formattedLink = link.replace(/_links\.txt$/, '').replace(/_/g, '/');
-                
-                if (!formattedLink.startsWith('http://') && !formattedLink.startsWith('https://')) {
-                    formattedLink = 'https://' + formattedLink;
-                }
-                
-                formattedLink = formattedLink.replace(/\/+$/, '');
-                
-                // Generate the command
-                const parts = formattedLink.split('/');
-                const commandParts = parts.slice(2); // Get all relevant parts
-                const command = `cat allFile.txt | grep "${commandParts.join('" | grep "')}"`;
-                
-                // Output the formatted link and command
-                outputDiv.innerHTML += `
-                    <div class="link-container">
-                        <a href="${formattedLink}" target="_blank">${formattedLink}</a>
-                        <div class="command" onclick="copyText('${command}')">${command}</div>
-                    </div>
-                `;
-            });
-        }
+            // Split the input text into sections
+            const sections = input.split('-----------------------').filter(section => section.trim() !== '');
 
-        function copyText(command) {
-            const textArea = document.createElement('textarea');
-            textArea.value = command;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            alert("Command copied to clipboard!");
+            sections.forEach(section => {
+                const nxdomainMatch = section.match(/NXDOMAIN:\s*(.+)/);
+                const commandsMatch = section.match(/COMMANDS:\s*(.+)/);
+                const filePathMatch = section.match(/FILEPATH:\s*(.+)/);
+
+                if (filePathMatch) {
+                    let filePath = filePathMatch[1].trim();
+                    filePath = filePath.replace(/_links\.txt$/, '').replace(/_/g, '/');
+
+                    if (!filePath.startsWith('http://') && !filePath.startsWith('https://')) {
+                        filePath = 'https://' + filePath;
+                    }
+                    
+                    filePath = filePath.replace(/\/+$/, '');
+
+                    // Prepare output text
+                    const domain = nxdomainMatch ? nxdomainMatch[1] : '';
+                    const outputText = `
+--------------------------------------------------
+NXDOMAIN: <a href="https://godaddy.com/en-ie/domainsearch/find?domainToCheck=${domain}" target="_blank">${domain}</a>
+${commandsMatch ? commandsMatch[0] : ''}
+FILEPATH: <a href="${filePath}" target="_blank">${filePath}</a>
+-----------------------`;
+
+                    outputDiv.innerHTML += `<pre>${outputText}</pre>`;
+                }
+            });
         }
     </script>
 </body>
